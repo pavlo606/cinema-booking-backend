@@ -27,5 +27,5 @@ export class UpdateUserDto {
     role?: "Admin" | "User";
 
     @AtLeastOneField(["email", "username", "password_hash", "role"])
-    _checkAtLeastOneField: string;
+    _checkAtLeastOneField?: string;
 }
