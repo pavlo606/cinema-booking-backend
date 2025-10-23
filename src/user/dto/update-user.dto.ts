@@ -1,3 +1,4 @@
+import { AtLeastOneField } from "@/common/decorators/at-least-one-field.decorator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsString, IsOptional, IsEmail, IsEnum } from "class-validator";
 
@@ -24,4 +25,7 @@ export class UpdateUserDto {
         USER: "User",
     })
     role?: "Admin" | "User";
+
+    @AtLeastOneField(["email", "username", "password_hash", "role"])
+    _checkAtLeastOneField: string;
 }
