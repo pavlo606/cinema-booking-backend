@@ -13,7 +13,6 @@ export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext): boolean {
-        // 1. Отримуємо список дозволених ролей з декоратора
         const requiredRoles = this.reflector.getAllAndOverride<Role[]>(
             ROLES_KEY,
             [context.getHandler(), context.getClass()],
@@ -21,16 +20,14 @@ export class RolesGuard implements CanActivate {
         console.log(`Reuired roles: ${requiredRoles}`)
 
         if (!requiredRoles) {
-            return true; // Якщо ролі не вказані — доступ вільний
+            return true;
         }
 
-        // 2. Отримуємо користувача, встановленого JwtAuthGuard
         const { user } = context.switchToHttp().getRequest();
 
         if (!user) throw new ForbiddenException("User not found");
         console.log(`User role: ${user.role}`)
 
-        // 3. Перевіряємо роль
         const hasRole = requiredRoles.includes(user.role);
 
         if (!hasRole) {
