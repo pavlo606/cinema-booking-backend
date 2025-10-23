@@ -26,6 +26,7 @@ export class UserService {
             username: user?.username,
             email: user?.email,
             role: user?.role,
+            refreshToken: user?.refreshToken,
             createdAt: user?.createdAt,
             updatedAt: user?.updatedAt,
         };
