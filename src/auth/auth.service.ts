@@ -30,7 +30,7 @@ export class AuthService {
             role: "User",
         });
 
-        const tokens = await this.getTokens(user.id, user.email);
+        const tokens = await this.getTokens(user.id, user.email, user.role);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
 
         return tokens;
@@ -43,7 +43,7 @@ export class AuthService {
         const valid = await bcrypt.compare(password, user.password_hash);
         if (!valid) throw new UnauthorizedException("Invalid credentials");
 
-        const tokens = await this.getTokens(user.id, user.email);
+        const tokens = await this.getTokens(user.id, user.email, user.role);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
 
         return tokens;
@@ -57,7 +57,7 @@ export class AuthService {
         const valid = await bcrypt.compare(refreshToken, user.refreshToken);
         if (!valid) throw new UnauthorizedException("Invalid refresh token");
 
-        const tokens = await this.getTokens(user.id, user.email);
+        const tokens = await this.getTokens(user.id, user.email, user.role);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
 
         return tokens;
@@ -87,8 +87,8 @@ export class AuthService {
         return this.usersService.delete(userId);
     }
 
-    private async getTokens(userId: number, email: string) {
-        const payload = { sub: userId, email };
+    private async getTokens(userId: number, email: string, role) {
+        const payload = { sub: userId, email, role };
         const accessToken = await this.jwtService.signAsync(payload, {
             expiresIn: "15m",
         });
