@@ -13,18 +13,108 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
   username      String?
   password_hash String
-  role          Role     @default(User)
+  role          Role      @default(User)
   refreshToken  String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  bookings      Booking[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Hall {
+  id         Int         @id @default(autoincrement())
+  name       String
+  screenings Screening[]
+  seats      Seat[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model SeatCategory {
+  id              Int                  @id @default(autoincrement())
+  name            String               @unique
+  description     String?
+  seats           Seat[]
+  screeningPrices ScreeningSeatPrice[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+}
+
+model ScreeningSeatPrice {
+  id          Int          @id @default(autoincrement())
+  screeningId Int
+  categoryId  Int
+  price       Decimal      @db.Decimal(10, 2)
+  screening   Screening    @relation(fields: [screeningId], references: [id])
+  category    SeatCategory @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([screeningId, categoryId])
+}
+
+model Seat {
+  id         Int          @id @default(autoincrement())
+  hallId     Int
+  categoryId Int
+  row        Int
+  column     Int
+  category   SeatCategory @relation(fields: [categoryId], references: [id])
+  hall       Hall         @relation(fields: [hallId], references: [id])
+  bookings   Booking[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Screening {
+  id         Int                  @id @default(autoincrement())
+  filmId     Int
+  hallId     Int
+  startTime  DateTime
+  endTime    DateTime
+  hall       Hall                 @relation(fields: [hallId], references: [id])
+  film       Film                 @relation(fields: [filmId], references: [id])
+  bookings   Booking[]
+  seatPrices ScreeningSeatPrice[]
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+}
+
+model Film {
+  id          Int         @id @default(autoincrement())
+  name        String
+  duration    Int
+  descripiton String
+  screanings  Screening[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Booking {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  screeningId Int
+  seatId      Int
+  status      BookingStatus @default(Booked)
+  screening   Screening     @relation(fields: [screeningId], references: [id])
+  seat        Seat          @relation(fields: [seatId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([screeningId, seatId])
 }
 
 enum Role {
   User
   Admin
+}
+
+enum BookingStatus {
+  Booked
+  Canceled
 }
