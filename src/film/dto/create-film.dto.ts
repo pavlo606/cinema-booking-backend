@@ -12,6 +12,6 @@ export class CreateFilmDto {
 
     @ApiProperty({ example: "Description for cool film" })
     @IsString()
-    descripiton: string;
+    description: string;
 }
 

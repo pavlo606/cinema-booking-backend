@@ -5,6 +5,9 @@ import { type Request } from "express";
 import { UserService } from "./user.service";
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { RolesGuard } from "@/auth/guards/roles.guard";
+import { Roles } from "@/auth/roles.decorator";
+import { Role } from "@/auth/roles.enum";
 
 @ApiTags("User")
 @Controller("user")
@@ -19,6 +22,17 @@ export class UserController {
     async getMe(@Req() req: Request) {
         const user = req.user as { userId: number };
         return this.userService.findByIdSafe(user.userId);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ADMIN)
+    @Get()
+    @ApiOperation({ summary: "Get all users" })
+    @ApiResponse({ status: 200, description: "Returns all users" })
+    @ApiResponse({ status: 401, description: "Invalid credentionals" })
+    @ApiResponse({ status: 403, description: "Do not have permission" })
+    async getAll() {
+        return this.userService.findAll();
     }
 
     @UseGuards(JwtAuthGuard)

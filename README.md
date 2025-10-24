@@ -34,10 +34,10 @@ npx prisma migrate deploy
 
 After that you can run app in development mode (updating on file change)
 ```bash
-npm start:dev
+npm run start:dev
 ```
 
 or in production mode
 ```bash
-npm start:prod
+npm run start:prod
 ```

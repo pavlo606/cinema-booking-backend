@@ -21,19 +21,16 @@ export class UserService {
 
     async findByIdSafe(id: number) {
         const user = await this.prisma.user.findUnique({ where: { id } });
-        return {
-            id: user?.id,
-            username: user?.username,
-            email: user?.email,
-            role: user?.role,
-            refreshToken: user?.refreshToken,
-            createdAt: user?.createdAt,
-            updatedAt: user?.updatedAt,
-        };
+        return this.getSafeUserData(user);
     }
 
     async findById(id: number) {
         return this.prisma.user.findUnique({ where: { id } });
+    }
+
+    async findAll() {
+        const users = await this.prisma.user.findMany();
+        return users.map(user => this.getSafeUserData(user))
     }
 
     async updateRefreshToken(
@@ -67,5 +64,16 @@ export class UserService {
         return this.prisma.user.delete({
             where: { id },
         });
+    }
+
+    private getSafeUserData = (user: any) => {
+        return {
+            id: user?.id,
+            username: user?.username,
+            email: user?.email,
+            role: user?.role,
+            createdAt: user?.createdAt,
+            updatedAt: user?.updatedAt,
+        };
     }
 }

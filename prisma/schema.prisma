@@ -49,8 +49,8 @@ model ScreeningSeatPrice {
   screeningId Int
   categoryId  Int
   price       Decimal      @db.Decimal(10, 2)
-  screening   Screening    @relation(fields: [screeningId], references: [id])
-  category    SeatCategory @relation(fields: [categoryId], references: [id])
+  screening   Screening    @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+  category    SeatCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -63,8 +63,8 @@ model Seat {
   categoryId Int
   row        Int
   column     Int
-  category   SeatCategory @relation(fields: [categoryId], references: [id])
-  hall       Hall         @relation(fields: [hallId], references: [id])
+  category   SeatCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  hall       Hall         @relation(fields: [hallId], references: [id], onDelete: Cascade)
   bookings   Booking[]
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
@@ -76,8 +76,8 @@ model Screening {
   hallId     Int
   startTime  DateTime
   endTime    DateTime
-  hall       Hall                 @relation(fields: [hallId], references: [id])
-  film       Film                 @relation(fields: [filmId], references: [id])
+  hall       Hall                 @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  film       Film                 @relation(fields: [filmId], references: [id], onDelete: Cascade)
   bookings   Booking[]
   seatPrices ScreeningSeatPrice[]
   createdAt  DateTime             @default(now())
@@ -88,7 +88,7 @@ model Film {
   id          Int         @id @default(autoincrement())
   name        String
   duration    Int
-  descripiton String
+  description String?
   screanings  Screening[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -100,9 +100,9 @@ model Booking {
   screeningId Int
   seatId      Int
   status      BookingStatus @default(Booked)
-  screening   Screening     @relation(fields: [screeningId], references: [id])
-  seat        Seat          @relation(fields: [seatId], references: [id])
-  user        User          @relation(fields: [userId], references: [id])
+  screening   Screening     @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+  seat        Seat          @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
