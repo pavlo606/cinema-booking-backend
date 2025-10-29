@@ -66,12 +66,15 @@ export class FilmController {
             uri = await this.storageService.upload(poster);
         }
         const parsed = JSON.parse(data || "{}");
-        const dto = plainToInstance(CreateFilmDto, {...parsed, posterURL: uri})
+        const dto = plainToInstance(CreateFilmDto, {
+            ...parsed,
+            posterURL: uri,
+        });
         try {
             await validateOrReject(dto);
             return this.filmService.create(dto);
         } catch (err) {
-            throw new BadRequestException("Invalid parameters")
+            throw new BadRequestException("Invalid parameters");
         }
     }
 
@@ -120,12 +123,17 @@ export class FilmController {
             uri = await this.storageService.upload(poster);
         }
         const parsed = JSON.parse(data || "{}");
-        const dto = plainToInstance(UpdateFilmDto, {...parsed, posterURL: uri})
+        const dto = plainToInstance(UpdateFilmDto, {
+            ...parsed,
+            posterURL: uri,
+        });
         try {
             await validateOrReject(dto);
             return this.filmService.update(+id, dto);
         } catch (err) {
-            throw new BadRequestException("You need to specify at least one field")
+            throw new BadRequestException(
+                "You need to specify at least one field",
+            );
         }
     }
 
@@ -134,5 +142,10 @@ export class FilmController {
     // @Roles(Role.ADMIN)
     async remove(@Param("id") id: string) {
         return this.filmService.remove(+id);
+    }
+
+    @Get("search/:prompt")
+    async search(@Param("prompt") prompt: string) {
+        return this.filmService.search(prompt);
     }
 }

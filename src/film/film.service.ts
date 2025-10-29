@@ -39,7 +39,7 @@ export class FilmService {
             where: { id },
         });
         if (film && film.posterURL && data.posterURL)
-            await this.storageService.delete(film.posterURL)
+            await this.storageService.delete(film.posterURL);
 
         return this.prisma.film.update({
             where: { id },
@@ -52,9 +52,15 @@ export class FilmService {
             where: { id },
         });
         if (film && film.posterURL)
-            await this.storageService.delete(film.posterURL)
+            await this.storageService.delete(film.posterURL);
 
         return this.prisma.film.delete({ where: { id } });
+    }
+
+    async search(prompt: string) {
+        return await this.prisma.film.findMany({
+            where: { name: { contains: prompt, mode: "insensitive" } },
+        });
     }
 
     private genereteUrl = (posterURL: string | null): string | null => {
