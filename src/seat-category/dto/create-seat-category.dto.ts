@@ -9,5 +9,9 @@ export class CreateSeatCategoryDto {
     @ApiProperty({ example: "Standart seat" })
     @IsString()
     description: string;
+    
+    @ApiProperty({ example: "#888" })
+    @IsString()
+    color: string;
 }
 

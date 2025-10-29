@@ -38,6 +38,7 @@ model SeatCategory {
   id              Int                  @id @default(autoincrement())
   name            String               @unique
   description     String?
+  color           String?
   seats           Seat[]
   screeningPrices ScreeningSeatPrice[]
   createdAt       DateTime             @default(now())
@@ -84,16 +85,24 @@ model Screening {
   updatedAt  DateTime             @updatedAt
 }
 
+model FilmCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  films     Film[]   @relation("FilmCategories")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Film {
-  id          Int         @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   duration    Int
-  genre       String?
+  categories  FilmCategory[] @relation("FilmCategories")
   posterURL   String?
   description String?
-  screanings  Screening[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  screenings  Screening[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
 model Booking {
