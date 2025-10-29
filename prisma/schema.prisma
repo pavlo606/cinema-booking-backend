@@ -88,6 +88,8 @@ model Film {
   id          Int         @id @default(autoincrement())
   name        String
   duration    Int
+  genre       String?
+  posterURL   String?
   description String?
   screanings  Screening[]
   createdAt   DateTime    @default(now())

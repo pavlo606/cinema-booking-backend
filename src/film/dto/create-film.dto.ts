@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsString, IsOptional } from "class-validator";
 
 export class CreateFilmDto {
     @ApiProperty({ example: "Cool film" })
@@ -13,5 +13,13 @@ export class CreateFilmDto {
     @ApiProperty({ example: "Description for cool film" })
     @IsString()
     description: string;
-}
 
+    @ApiProperty({ example: "genre" })
+    @IsOptional()
+    @IsString()
+    genre?: string;
+
+    @IsOptional()
+    @IsString()
+    posterURL?: string;
+}
