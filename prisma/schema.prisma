@@ -126,6 +126,7 @@ enum Role {
 }
 
 enum BookingStatus {
+  Pending
   Booked
   Canceled
 }

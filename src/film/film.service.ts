@@ -37,6 +37,7 @@ export class FilmService {
                     },
                 },
             },
+            orderBy: { createdAt: "desc" },
         });
         return films.map((film) => ({
             ...film,

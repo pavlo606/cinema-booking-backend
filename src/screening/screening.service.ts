@@ -15,14 +15,22 @@ export class ScreeningService {
 
     async findAll() {
         return this.prisma.screening.findMany({
-            include: { hall: { include: { seats: { include: { category: true } } } } },
+            include: {
+                hall: { include: { seats: { include: { category: true } } } },
+                seatPrices: { include: { category: true } },
+                bookings: true
+            },
         });
     }
 
     async findOne(id: number) {
         return this.prisma.screening.findUnique({
             where: { id },
-            include: { hall: { include: { seats: { include: { category: true } } } } },
+            include: {
+                hall: { include: { seats: { include: { category: true } } } },
+                seatPrices: { include: { category: true } },
+                bookings: true
+            },
         });
     }
 

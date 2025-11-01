@@ -26,6 +26,12 @@ export class BookingController {
     return this.bookingService.findOne(+id);
   }
 
+  @Get('for/user')
+  async findAllForUser(@Req() req: Request) {
+    const user = req.user as { userId: number };
+    return this.bookingService.findAllForUser(user.userId);
+  }
+
   @Patch(':id')
   async update(@Req() req: Request, @Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
     const user = req.user as { userId: number };
