@@ -7,6 +7,7 @@ import {
     Param,
     Delete,
     UseGuards,
+    Query,
 } from "@nestjs/common";
 import { ScreeningService } from "./screening.service";
 import { CreateScreeningDto } from "./dto/create-screening.dto";
@@ -35,6 +36,11 @@ export class ScreeningController {
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.screeningService.findOne(+id);
+    }
+
+    @Get("/by/date")
+    async findByDate(@Query('date') date?: string) {
+        return this.screeningService.findByDate(date);
     }
 
     @Patch(":id")

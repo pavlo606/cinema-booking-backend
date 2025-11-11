@@ -10,6 +10,7 @@ import {
     UploadedFile,
     UseInterceptors,
     BadRequestException,
+    Query,
 } from "@nestjs/common";
 import { FilmService } from "./film.service";
 import { CreateFilmDto } from "./dto/create-film.dto";
@@ -22,7 +23,7 @@ import { StorageService } from "@/storage/storage.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { plainToInstance } from "class-transformer";
 import { validateOrReject } from "class-validator";
-import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Films")
 @Controller("film")
@@ -86,6 +87,12 @@ export class FilmController {
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.filmService.findOne(+id);
+    }
+
+    @Get("/by/date")
+    @ApiQuery({ name: 'date', required: false, description: 'Optional date field' })
+    async findByDate(@Query("date") date?: string) {
+        return this.filmService.findByDate(date);
     }
 
     @Patch(":id")

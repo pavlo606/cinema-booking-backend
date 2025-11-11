@@ -16,10 +16,47 @@ export class ScreeningService {
     async findAll() {
         return this.prisma.screening.findMany({
             include: {
-                hall: { include: { seats: { include: { category: true } } } },
+                hall: {
+                    include: { seats: { include: { category: true } } },
+                },
                 seatPrices: { include: { category: true } },
-                bookings: true
+                bookings: true,
             },
+        });
+    }
+
+    async findByDate(date?: string) {
+        if (!date) {
+            const today = new Date();
+            date = today.toISOString().split("T")[0];
+        }
+
+        const startOfDay = new Date(date + "T00:00:00.000Z");
+        const endOfDay = new Date(date + "T23:59:59.999Z");
+
+        return this.prisma.film.findMany({
+            where: {
+                screenings: {
+                    some: {
+                        startTime: {
+                            gte: startOfDay,
+                            lte: endOfDay,
+                        },
+                    },
+                },
+            },
+            include: {
+                screenings: {
+                    where: {
+                        startTime: {
+                            gte: startOfDay,
+                            lte: endOfDay,
+                        },
+                    },
+                    orderBy: { startTime: "asc" },
+                },
+            },
+            orderBy: { name: "asc" },
         });
     }
 
@@ -29,7 +66,7 @@ export class ScreeningService {
             include: {
                 hall: { include: { seats: { include: { category: true } } } },
                 seatPrices: { include: { category: true } },
-                bookings: true
+                bookings: true,
             },
         });
     }

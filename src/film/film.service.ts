@@ -63,6 +63,64 @@ export class FilmService {
         return film;
     }
 
+    async findByDate(date?: string) {
+        if (!date) {
+            const today = new Date();
+            date = today.toISOString().split("T")[0];
+        }
+
+        const startOfDay = new Date(date + "T00:00:00.000Z");
+        const endOfDay = new Date(date + "T23:59:59.999Z");
+
+        // const screenings = await this.prisma.screening.findMany({
+        //     where: {
+        //         startTime: {
+        //             gte: startOfDay,
+        //             lte: endOfDay,
+        //         },
+        //     },
+        //     include: {
+        //         film: true,
+        //     },
+        //     orderBy: { startTime: "asc" },
+        // });
+        // return screenings.map((screening) => ({
+        //     ...screening,
+        //     film: {
+        //         ...screening.film,
+        //         posterURL: this.genereteUrl(screening.film.posterURL),
+        //     },
+        // }));
+        const films = await this.prisma.film.findMany({
+            where: {
+                screenings: {
+                    some: {
+                        startTime: {
+                            gte: startOfDay,
+                            lte: endOfDay,
+                        },
+                    },
+                },
+            },
+            include: {
+                screenings: {
+                    where: {
+                        startTime: {
+                            gte: startOfDay,
+                            lte: endOfDay,
+                        },
+                    },
+                    orderBy: { startTime: "asc" },
+                },
+            },
+            orderBy: { name: "asc" },
+        });
+        return films.map((film) => ({
+            ...film,
+            posterURL: this.genereteUrl(film.posterURL),
+        }));
+    }
+
     async update(id: number, dto: UpdateFilmDto) {
         const { categories, ...data } = dto;
         const film = await this.prisma.film.findUnique({
