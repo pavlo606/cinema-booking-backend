@@ -21,7 +21,10 @@ export class ScreeningService {
                 },
                 seatPrices: { include: { category: true } },
                 bookings: true,
-            },
+                film: true,
+            }, orderBy: {
+                id: "desc"
+            }
         });
     }
 
@@ -67,6 +70,7 @@ export class ScreeningService {
                 hall: { include: { seats: { include: { category: true } } } },
                 seatPrices: { include: { category: true } },
                 bookings: true,
+                film: true,
             },
         });
     }
