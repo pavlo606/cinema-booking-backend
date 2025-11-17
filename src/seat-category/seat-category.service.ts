@@ -31,6 +31,10 @@ export class SeatCategoryService {
     }
 
     async remove(id: number) {
+        await this.prisma.seat.updateMany({
+            where: {categoryId: id},
+            data: {categoryId: null}
+        })
         return this.prisma.seatCategory.delete({ where: { id } });
     }
 }

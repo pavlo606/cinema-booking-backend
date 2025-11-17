@@ -15,6 +15,7 @@ import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 import { Roles } from "@/auth/roles.decorator";
 import { Role } from "@/auth/roles.enum";
+import { UpdateForHallDto } from "./dto/update-for-hall.dto";
 
 @Controller("seat")
 export class SeatController {
@@ -49,5 +50,12 @@ export class SeatController {
     @Roles(Role.ADMIN)
     async remove(@Param("id") id: string) {
         return this.seatService.remove(+id);
+    }
+
+    @Post("update-hall")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ADMIN)
+    async updateForHall(@Body() dto: UpdateForHallDto) {
+        return this.seatService.updateForHall(dto);
     }
 }

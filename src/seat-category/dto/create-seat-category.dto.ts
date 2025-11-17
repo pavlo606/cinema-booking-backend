@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateSeatCategoryDto {
     @ApiProperty({ example: "Standart" })
@@ -7,6 +7,7 @@ export class CreateSeatCategoryDto {
     name: string;
 
     @ApiProperty({ example: "Standart seat" })
+    @IsOptional()
     @IsString()
     description: string;
     

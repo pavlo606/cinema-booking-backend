@@ -14,12 +14,15 @@ export class HallService {
     }
 
     async findAll() {
-        return this.prisma.hall.findMany();
+        return this.prisma.hall.findMany({
+            include: { seats: { include: { category: true } } },
+        });
     }
 
     async findOne(id: number) {
         return this.prisma.hall.findUnique({
             where: { id },
+            include: { seats: { include: { category: true } } },
         });
     }
 

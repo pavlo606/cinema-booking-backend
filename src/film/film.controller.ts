@@ -56,8 +56,8 @@ export class FilmController {
             },
         },
     })
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles(Role.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ADMIN)
     async create(
         @UploadedFile() poster: Express.Multer.File,
         @Body("data") data: string,
@@ -118,8 +118,8 @@ export class FilmController {
             },
         },
     })
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles(Role.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ADMIN)
     async update(
         @Param("id") id: string,
         @UploadedFile() poster: Express.Multer.File,

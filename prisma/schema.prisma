@@ -59,16 +59,18 @@ model ScreeningSeatPrice {
 }
 
 model Seat {
-  id         Int          @id @default(autoincrement())
+  id         Int           @id @default(autoincrement())
   hallId     Int
-  categoryId Int
+  categoryId Int?
   row        Int
   column     Int
-  category   SeatCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  hall       Hall         @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  category   SeatCategory? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  hall       Hall          @relation(fields: [hallId], references: [id], onDelete: Cascade)
   bookings   Booking[]
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@unique([hallId, row, column])
 }
 
 model Screening {
