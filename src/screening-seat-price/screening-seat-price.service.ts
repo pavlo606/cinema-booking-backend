@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateScreeningSeatPriceDto } from "./dto/create-screening-seat-price.dto";
 import { UpdateScreeningSeatPriceDto } from "./dto/update-screening-seat-price.dto";
 import { PrismaService } from "@/prisma/prisma.service";
+import { UpdateForScreenignDto } from "./dto/update-for-screening.dto";
 
 @Injectable()
 export class ScreeningSeatPriceService {
@@ -32,5 +33,17 @@ export class ScreeningSeatPriceService {
 
     async remove(id: number) {
         return this.prisma.screeningSeatPrice.delete({ where: { id } });
+    }
+
+    async updateForScreening(data: UpdateForScreenignDto) {
+        await this.prisma.screeningSeatPrice.deleteMany({
+            where: { screeningId: data.screeningId },
+        });
+        return this.prisma.screeningSeatPrice.createMany({
+            data: data.priceSettings.map((setting) => ({
+                ...setting,
+                screeningId: data.screeningId,
+            })),
+        });
     }
 }

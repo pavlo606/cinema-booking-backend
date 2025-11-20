@@ -15,6 +15,7 @@ import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { RolesGuard } from "@/auth/guards/roles.guard";
 import { Roles } from "@/auth/roles.decorator";
 import { Role } from "@/auth/roles.enum";
+import { UpdateForScreenignDto } from "./dto/update-for-screening.dto";
 
 @Controller("screening-seat-price")
 export class ScreeningSeatPriceController {
@@ -25,7 +26,9 @@ export class ScreeningSeatPriceController {
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.ADMIN)
-    async create(@Body() createScreeningSeatPriceDto: CreateScreeningSeatPriceDto) {
+    async create(
+        @Body() createScreeningSeatPriceDto: CreateScreeningSeatPriceDto,
+    ) {
         return this.screeningSeatPriceService.create(
             createScreeningSeatPriceDto,
         );
@@ -59,5 +62,12 @@ export class ScreeningSeatPriceController {
     @Roles(Role.ADMIN)
     async remove(@Param("id") id: string) {
         return this.screeningSeatPriceService.remove(+id);
+    }
+
+    @Post("update-screening")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ADMIN)
+    async updateForScreening(@Body() dto: UpdateForScreenignDto) {
+        return this.screeningSeatPriceService.updateForScreening(dto);
     }
 }

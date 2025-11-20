@@ -72,25 +72,6 @@ export class FilmService {
         const startOfDay = new Date(date + "T00:00:00.000Z");
         const endOfDay = new Date(date + "T23:59:59.999Z");
 
-        // const screenings = await this.prisma.screening.findMany({
-        //     where: {
-        //         startTime: {
-        //             gte: startOfDay,
-        //             lte: endOfDay,
-        //         },
-        //     },
-        //     include: {
-        //         film: true,
-        //     },
-        //     orderBy: { startTime: "asc" },
-        // });
-        // return screenings.map((screening) => ({
-        //     ...screening,
-        //     film: {
-        //         ...screening.film,
-        //         posterURL: this.genereteUrl(screening.film.posterURL),
-        //     },
-        // }));
         const films = await this.prisma.film.findMany({
             where: {
                 screenings: {
