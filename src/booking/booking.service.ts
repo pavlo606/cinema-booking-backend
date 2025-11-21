@@ -2,34 +2,55 @@ import { Injectable } from "@nestjs/common";
 import { CreateBookingDto } from "./dto/create-booking.dto";
 import { UpdateBookingDto } from "./dto/update-booking.dto";
 import { PrismaService } from "@/prisma/prisma.service";
+import { SocketGateway } from "@/socket/socket.gateway";
 
 @Injectable()
 export class BookingService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private socketGateway: SocketGateway,
+    ) {}
 
     async create(userId: number, data: CreateBookingDto) {
-        return this.prisma.booking.create({
+        const res = await this.prisma.booking.create({
             data: { ...data, userId },
         });
+
+        const bookings = await this.prisma.booking.findMany({
+            where: { screeningId: data.screeningId },
+        });
+
+        this.socketGateway.broadcastSeatsUpdate(data.screeningId, bookings);
+
+        return res;
     }
 
     async findAll() {
         return this.prisma.booking.findMany({
-            include: { screening: { include: { film: true, hall: true } }, seat: true },
+            include: {
+                screening: { include: { film: true, hall: true } },
+                seat: true,
+            },
         });
     }
 
     async findOne(id: number) {
         return this.prisma.booking.findUnique({
             where: { id },
-            include: { screening: { include: { film: true, hall: true } }, seat: true },
+            include: {
+                screening: { include: { film: true, hall: true } },
+                seat: true,
+            },
         });
     }
 
     async findAllForUser(userId: number) {
         return this.prisma.booking.findMany({
             where: { userId },
-            include: { screening: { include: { film: true, hall: true } }, seat: true },
+            include: {
+                screening: { include: { film: true, hall: true } },
+                seat: true,
+            },
         });
     }
 
@@ -41,6 +62,15 @@ export class BookingService {
     }
 
     async remove(id: number) {
-        return this.prisma.booking.delete({ where: { id } });
+        const res = await this.prisma.booking.delete({ where: { id } });
+
+        const bookings = await this.prisma.booking.findMany({
+            where: { screeningId: res.screeningId },
+        });
+        console.log(bookings)
+
+        this.socketGateway.broadcastSeatsUpdate(res.screeningId, bookings);
+
+        return res;
     }
 }

@@ -15,10 +15,11 @@ import { ScreeningSeatPriceModule } from './screening-seat-price/screening-seat-
 import { StorageModule } from './storage/storage.module';
 import { FilmCategoryModule } from './film-category/film-category.module';
 import { DashboardInfoModule } from './dashboard-info/dashboard-info.module';
+import { SocketGateway } from './socket/socket.gateway';
 
 @Module({
   imports: [UserModule, ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, BookingModule, FilmModule, HallModule, SeatCategoryModule, SeatModule, ScreeningModule, ScreeningSeatPriceModule, StorageModule, FilmCategoryModule, DashboardInfoModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SocketGateway],
 })
 export class AppModule {}
