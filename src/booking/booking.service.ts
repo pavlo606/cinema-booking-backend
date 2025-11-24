@@ -12,8 +12,18 @@ export class BookingService {
     ) {}
 
     async create(userId: number, data: CreateBookingDto) {
+        const seat = await this.prisma.seat.findUnique({where: {id: data.seatId}})
+        if (!seat?.categoryId) return 
+
+        const priceEntry = await this.prisma.screeningSeatPrice.findFirst({
+            where: {
+                screeningId: data.screeningId,
+                categoryId: seat.categoryId
+            }
+        });
+
         const res = await this.prisma.booking.create({
-            data: { ...data, userId },
+            data: { ...data, userId, price: priceEntry?.price || 0 },
         });
 
         const bookings = await this.prisma.booking.findMany({
@@ -67,7 +77,7 @@ export class BookingService {
         const bookings = await this.prisma.booking.findMany({
             where: { screeningId: res.screeningId },
         });
-        console.log(bookings)
+        console.log(bookings);
 
         this.socketGateway.broadcastSeatsUpdate(res.screeningId, bookings);
 

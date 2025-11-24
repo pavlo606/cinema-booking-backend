@@ -112,6 +112,7 @@ model Booking {
   userId      Int
   screeningId Int
   seatId      Int
+  price       Decimal       @db.Decimal(10, 2)
   status      BookingStatus @default(Booked)
   screening   Screening     @relation(fields: [screeningId], references: [id], onDelete: Cascade)
   seat        Seat          @relation(fields: [seatId], references: [id], onDelete: Cascade)

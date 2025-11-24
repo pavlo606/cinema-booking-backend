@@ -7,6 +7,13 @@ import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter'
 import { join } from 'path';
 import * as express from 'express'; 
 
+declare global {
+    interface BigInt {
+        toJSON(): Number;
+    }
+}
+
+BigInt.prototype.toJSON = function () { return Number(this) }
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
