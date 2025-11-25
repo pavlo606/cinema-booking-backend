@@ -38,6 +38,11 @@ export class ScreeningController {
         return this.screeningService.findOne(+id);
     }
 
+    @Get(":id/prices")
+    async findPrices(@Param("id") id: string) {
+        return this.screeningService.findPrices(+id);
+    }
+
     @Get("/by/date")
     async findByDate(@Query('date') date?: string) {
         return this.screeningService.findByDate(date);

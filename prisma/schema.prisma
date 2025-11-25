@@ -112,7 +112,10 @@ model Booking {
   userId      Int
   screeningId Int
   seatId      Int
+  basePrice   Decimal       @db.Decimal(10, 2)
   price       Decimal       @db.Decimal(10, 2)
+  promocode   String?
+  discount    Int           @default(0)
   status      BookingStatus @default(Booked)
   screening   Screening     @relation(fields: [screeningId], references: [id], onDelete: Cascade)
   seat        Seat          @relation(fields: [seatId], references: [id], onDelete: Cascade)
@@ -121,6 +124,14 @@ model Booking {
   updatedAt   DateTime      @updatedAt
 
   @@unique([screeningId, seatId])
+}
+
+model PromoCode {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  discount  Int      // percent: 10 means -10%
+  expiresAt DateTime?
+  isActive  Boolean  @default(true)
 }
 
 enum Role {

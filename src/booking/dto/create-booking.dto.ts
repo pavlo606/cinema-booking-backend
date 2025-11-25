@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateBookingDto {
     @ApiProperty({ example: 1 })
@@ -9,4 +9,14 @@ export class CreateBookingDto {
     @ApiProperty({ example: 1 })
     @IsNumber()
     seatId: number;
+
+    @ApiProperty({ example: "PROMO1" })
+    @IsString()
+    @IsOptional()
+    promocode?: string;
+
+    // @ApiProperty({ example: 0 })
+    // @IsNumber()
+    // @IsOptional()
+    // discount?: number;
 }

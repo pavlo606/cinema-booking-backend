@@ -12,18 +12,33 @@ export class BookingService {
     ) {}
 
     async create(userId: number, data: CreateBookingDto) {
-        const seat = await this.prisma.seat.findUnique({where: {id: data.seatId}})
-        if (!seat?.categoryId) return 
+        const seat = await this.prisma.seat.findUnique({
+            where: { id: data.seatId },
+        });
+        if (!seat?.categoryId) return;
 
         const priceEntry = await this.prisma.screeningSeatPrice.findFirst({
             where: {
                 screeningId: data.screeningId,
-                categoryId: seat.categoryId
-            }
+                categoryId: seat.categoryId,
+            },
         });
 
+        const promo = await this.prisma.promoCode.findUnique({
+            where: { code: data.promocode || "" },
+        });
+        const discount = promo?.discount || 0;
+
+        const basePrice = Number(priceEntry?.price) || 0;
+
         const res = await this.prisma.booking.create({
-            data: { ...data, userId, price: priceEntry?.price || 0 },
+            data: {
+                ...data,
+                userId,
+                price: basePrice - (basePrice * discount) / 100,
+                basePrice,
+                discount,
+            },
         });
 
         const bookings = await this.prisma.booking.findMany({

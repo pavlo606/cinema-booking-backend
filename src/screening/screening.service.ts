@@ -22,9 +22,20 @@ export class ScreeningService {
                 seatPrices: { include: { category: true } },
                 bookings: true,
                 film: true,
-            }, orderBy: {
-                id: "desc"
-            }
+            },
+            orderBy: {
+                id: "desc",
+            },
+        });
+    }
+
+    async findPrices(id: number) {
+        return this.prisma.screening.findUnique({
+            where: { id },
+            include: {
+                seatPrices: true,
+                film: true
+            },
         });
     }
 

@@ -4,6 +4,6 @@ import { IsNumber, IsOptional } from "class-validator";
 import { AtLeastOneField } from "@/common/decorators/at-least-one-field.decorator";
 
 export class UpdateBookingDto extends PartialType(CreateBookingDto) {
-    @AtLeastOneField(["screeningId", "seatId"])
+    @AtLeastOneField(["screeningId", "seatId", "promocode"])
     _checkAtLeastOneField: string;
 }
